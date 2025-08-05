@@ -328,7 +328,7 @@ function handlePictureSubmit() {
   addPictureForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    // Vérifie qu'une image et un titre sont bien fournis
+    // Vérifie qu'une image et un titre sont bien fournis.
     const hasImage = document.querySelector("#photo-container").firstChild;
     if (!hasImage || !titleValue) {
       alert("Veuillez remplir tous les champs.");
