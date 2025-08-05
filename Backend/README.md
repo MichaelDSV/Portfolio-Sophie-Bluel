@@ -4,7 +4,7 @@ Ce dossier contient le code backend du projet
 
 ## Lancement du backend
 
-Ouvrez un terminal à cet emplacement
+Ouvrez un terminal à cet emplacement.
 
 Pour installer les dépendances du projet, executez la commande 
 ```bash 
