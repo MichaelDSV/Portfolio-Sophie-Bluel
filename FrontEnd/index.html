@@ -10,7 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="./assets/style.css" />
-  <!-- Font Awesome pour les icônes -->
   <script src="https://kit.fontawesome.com/2df4fe767c.js" crossorigin="anonymous"></script>
   <script src="js/app.js" defer></script>
 </head>
@@ -51,7 +50,6 @@
         <h3>Ajout photo</h3>
         <div class="form add-photo-form">
           <form id="picture-form" action="#" method="post">
-            <!-- Sélection du fichier -->
             <div class="file-section">
               <div id="photo-container"></div>
               <div><i class="fa-regular fa-image picture-loaded"></i></div>
@@ -78,7 +76,7 @@
     </div>
   </aside>
 
-  <!-- === ENTÊTE DU SITE === -->
+  <!-- === ENTÊTE === -->
   <header>
     <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
     <nav>
@@ -91,9 +89,9 @@
     </nav>
   </header>
 
-  <!-- === CONTENU PRINCIPAL === -->
+
   <main>
-    <!-- === Section présentation === -->
+    <!-- === Présentation === -->
     <section id="introduction">
       <figure>
         <img src="./assets/images/sophie-bluel.png" alt="Photo Sophie Bluel" />
@@ -107,12 +105,12 @@
       </article>
     </section>
 
-    <!-- === Section Projets === -->
+    <!-- === Projets === -->
     <section id="portfolio">
       <div class="projets-container">
         <h2 class="projets-title">Mes Projets</h2>
 
-        <!-- Bouton "Mode édition", affiché seulement si admin connecté -->
+        <!-- Bouton "Mode édition" -->
         <a href="#modal1" style="display: none" class="js-modal js-modal-2">
           <i class="fa-regular fa-pen-to-square"></i> Mode édition
         </a>
@@ -123,7 +121,7 @@
         <div class="tous active-filter">Tous</div>
       </div>
 
-      <!-- Galerie d'images générée dynamiquement -->
+      <!-- Galerie d'images dynamique -->
       <div class="gallery"></div>
     </section>
 

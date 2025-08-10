@@ -1,24 +1,20 @@
 // === URL de base de l'API ===
 const url = "http://localhost:5678/api";
 
-// === Appels des fonctions principales dès le chargement ===
-getWorks(); // Récupère et affiche les travaux
-getCategories(); // Récupère et affiche les catégories (filtres)
-displayAdminMode(); // Active le mode admin si un token est présent
-handlePictureSubmit(); // Gère l'envoi de nouvelles images (formulaire)
+// === Appels des fonctions principales ===
+getWorks(); // travaux
+getCategories(); // filtres
+displayAdminMode(); // mode admin
+handlePictureSubmit(); // formulaire
 
-// === Gestion du switch entre les deux modales ===
+// === Switch entre les deux modales ===
 const addPhotoButton = document.querySelector(".add-photo-button");
 const backButton = document.querySelector(".js-modal-back");
-
-// Un clic sur un de ces boutons affiche ou cache la modale concernée
 addPhotoButton.addEventListener("click", toggleModal);
 backButton.addEventListener("click", toggleModal);
 
-// === Fonction pour récupérer les travaux depuis l'API ===
-// Si un filtre (catégorie) est fourni, seuls les travaux de cette catégorie seront affichés
+// === Fonction pour récupérer les travaux ===
 async function getWorks(filter) {
-  // On vide les galeries pour ne pas avoir de doublons
   document.querySelector(".gallery").innerHTML = "";
   document.querySelector(".modal-gallery").innerHTML = "";
 
@@ -28,18 +24,16 @@ async function getWorks(filter) {
 
     const works = await response.json();
 
-    // Si un filtre est précisé (ex : catégorie "Objets"), on ne garde que ceux-là
     const worksToDisplay = filter
       ? works.filter((item) => item.categoryId === filter)
       : works;
 
-    // On affiche les images dans la galerie principale et la modale
+    // Images dans la galerie principale et la modale
     worksToDisplay.forEach((work) => {
-      setFigure(work);        // Galerie principale
-      setFigureModal(work);   // Galerie modale
+      setFigure(work);
+      setFigureModal(work);
     });
 
-    // Ajoute les listeners "poubelle" (suppression) après avoir injecté les images
     document.querySelectorAll(".fa-trash-can").forEach((icon) => {
       icon.addEventListener("click", (event) => deleteWork(event));
     });
@@ -72,7 +66,7 @@ function setFigureModal(data) {
   document.querySelector(".modal-gallery").appendChild(figure);
 }
 
-// === Fonction pour récupérer les catégories depuis l'API et créer les filtres ===
+// === Fonction pour récupérer les catégories et créer les filtres ===
 async function getCategories() {
   try {
     const response = await fetch(`${url}/categories`);
@@ -85,54 +79,43 @@ async function getCategories() {
   }
 }
 
-
-
-
-// === Création d'un filtre dynamique pour chaque catégorie ===
+// === Création d'un filtre pour chaque catégorie ===
 function setFilter(data) {
-  const div = document.createElement("div");       // Création d'un bouton filtre
-  div.className = data.id;                         // Classe = ID de la catégorie (utile pour le style)
-  div.textContent = data.name;                     // Texte visible du filtre = nom de la catégorie
+  const div = document.createElement("div");
+  div.className = data.id;
+  div.textContent = data.name;
 
-  // Quand on clique, on filtre les travaux + on applique le style actif
   div.addEventListener("click", () => getWorks(data.id));
   div.addEventListener("click", toggleFilter);
 
-  // Le bouton "Tous" doit aussi être stylisé comme actif quand cliqué
   document.querySelector(".tous").addEventListener("click", toggleFilter);
-
-  // On l’ajoute à la barre de filtres
   document.querySelector(".div-container").append(div);
 }
 
 // === Style actif sur le filtre sélectionné ===
 function toggleFilter(event) {
   const container = document.querySelector(".div-container");
-  // On retire la classe "active-filter" de tous les boutons
   Array.from(container.children).forEach((child) =>
     child.classList.remove("active-filter")
   );
-  // On applique "active-filter" uniquement à celui cliqué
   event.target.classList.add("active-filter");
 }
 
-// === Cas spécial : afficher tous les projets quand on clique sur "Tous" ===
+// === Afficher tous les projets (filtre "Tous") ===
 document.querySelector(".tous").addEventListener("click", () => getWorks());
 
-
-// === Affiche les éléments du mode admin si un token est en session ===
+// === Affiche les éléments du mode admin si token ===
 function displayAdminMode() {
   if (sessionStorage.authToken) {
     // Cacher les filtres
     document.querySelector(".div-container").style.display = "none";
 
-    // Afficher le bouton "modifier" sous les projets
+    // Afficher le bouton "modifier"
     document.querySelector(".js-modal-2").style.display = "block";
 
-    // Ajuster la mise en page
     document.querySelector(".gallery").style.margin = "30px 0 0 0";
 
-    // Créer une bannière noire "Mode édition" tout en haut
+    // Bannière noire "Mode édition"
     const editBanner = document.createElement("div");
     editBanner.className = "edit";
     editBanner.innerHTML = `
@@ -147,23 +130,22 @@ function displayAdminMode() {
     const logBtn = document.querySelector(".log-button");
     logBtn.textContent = "logout";
     logBtn.addEventListener("click", () => {
-      sessionStorage.removeItem("authToken"); // Suppression du token
+      sessionStorage.removeItem("authToken");
     });
   }
 }
 
-
-// === Variables globales pour la modale ===
+// === Variables pour la modale ===
 let modal = null;
-const focusableSelector = "button, a, input, textarea"; // Éléments focusables
-let focusables = []; // Pour piéger le focus dans la modale
+const focusableSelector = "button, a, input, textarea";
+let focusables = [];
 
 // === Ouvre une modale ===
 const openModal = function (e) {
   e.preventDefault();
-  modal = document.querySelector(e.target.getAttribute("href")); // Cible la modale par son ID
-  focusables = Array.from(modal.querySelectorAll(focusableSelector)); // Liste des éléments focusables
-  focusables[0].focus(); // Donne immédiatement le focus au premier élément
+  modal = document.querySelector(e.target.getAttribute("href")); // Cible la modale
+  focusables = Array.from(modal.querySelectorAll(focusableSelector));
+  focusables[0].focus();
 
   // Affiche la modale
   modal.style.display = null;
@@ -203,40 +185,34 @@ const focusInModal = function (e) {
   let index = focusables.findIndex((f) => f === modal.querySelector(":focus"));
   index = e.shiftKey ? index - 1 : index + 1;
 
-  // Boucle de focus (retour au début si on atteint la fin)
   if (index >= focusables.length) index = 0;
   if (index < 0) index = focusables.length - 1;
 
   focusables[index].focus();
 };
 
-// === Gestion clavier (ESC pour fermer, TAB pour trap le focus) ===
+// === Gestion clavier ===
 window.addEventListener("keydown", function (e) {
   if (e.key === "Escape" || e.key === "Esc") closeModal(e);
   if (e.key === "Tab" && modal !== null) focusInModal(e);
 });
 
-// === Active la modale quand on clique sur un lien avec classe .js-modal ===
+// === Active la modale ===
 document.querySelectorAll(".js-modal").forEach((a) =>
   a.addEventListener("click", openModal)
 );
 
-
-
-
-
-
 // === Supprime un projet quand on clique sur la corbeille ===
 async function deleteWork(event) {
-  event.stopPropagation(); // Empêche le clic de se propager au parent
-  const id = event.srcElement.id; // Récupère l'ID du projet
-  const token = sessionStorage.authToken; // Récupère le token de session
+  event.stopPropagation();
+  const id = event.srcElement.id;
+  const token = sessionStorage.authToken;
 
   try {
     const response = await fetch(`${url}/works/${id}`, {
       method: "DELETE",
       headers: {
-        Authorization: "Bearer " + token, // Authentification
+        Authorization: "Bearer " + token,
       },
     });
 
@@ -252,32 +228,23 @@ async function deleteWork(event) {
   }
 }
 
-
-
-
-
-// === Bascule entre les 2 modales : galerie <-> ajout de photo ===
+// === Bascule entre les 2 modales ===
 function toggleModal() {
   const galleryModal = document.querySelector(".gallery-modal");
   const addModal = document.querySelector(".add-modal");
 
-  // Si galerie visible, on passe à l'ajout ; sinon on revient à la galerie
   const isGalleryVisible = galleryModal.style.display === "block" || galleryModal.style.display === "";
   galleryModal.style.display = isGalleryVisible ? "none" : "block";
   addModal.style.display = isGalleryVisible ? "block" : "none";
 }
 
-
-
-
-
-// === Fonction principale qui gère tout le processus d'ajout ===
+// === Fonction d'ajout d'images ===
 function handlePictureSubmit() {
-  const img = document.createElement("img"); // Pour prévisualiser l'image
+  const img = document.createElement("img");
   const fileInput = document.getElementById("file");
-  fileInput.style.display = "none"; // Cache l'input natif (on clique sur le label)
+  fileInput.style.display = "none";
   
-  let file; // Fichier image sélectionné
+  let file;
 
   // === Quand l'utilisateur choisit un fichier ===
   fileInput.addEventListener("change", function (event) {
@@ -292,15 +259,13 @@ function handlePictureSubmit() {
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        img.src = e.target.result; // URL de prévisualisation
+        img.src = e.target.result;
         img.alt = "Uploaded Photo";
         document.getElementById("photo-container").appendChild(img);
       };
 
-      // Convertit l’image en URL base64 et l’affiche
+      // Convertit l’image en URL
       reader.readAsDataURL(file);
-
-      // Cache l’icône et les instructions initiales
       document.querySelectorAll(".picture-loaded").forEach(el => el.style.display = "none");
 
     } else {
@@ -311,14 +276,14 @@ function handlePictureSubmit() {
   // === Gestion du formulaire de texte ===
   const titleInput = document.getElementById("title");
   let titleValue = "";
-  let selectedValue = "1"; // Catégorie par défaut
+  let selectedValue = "1";
 
-  // Stocke les changements de catégorie
+  // Changements de catégorie
   document.getElementById("category").addEventListener("change", function () {
     selectedValue = this.value;
   });
 
-  // Stocke le texte du titre en direct
+  // Texte du titre
   titleInput.addEventListener("input", function () {
     titleValue = titleInput.value;
   });
@@ -328,7 +293,6 @@ function handlePictureSubmit() {
   addPictureForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    // Vérifie qu'une image et un titre sont bien fournis.
     const hasImage = document.querySelector("#photo-container").firstChild;
     if (!hasImage || !titleValue) {
       alert("Veuillez remplir tous les champs.");
